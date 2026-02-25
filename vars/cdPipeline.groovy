@@ -6,40 +6,24 @@ def selectDeployEnv(branch) {
 }
 
 def runCD(Map params) {
-    pipeline {
-        agent any
+    // Manual Approval (Prod Only)
+    if (params.serviceBranch.startsWith("refs/tags") && params.manualApproval == 'true') {
+        input message: "Approve production deployment?"
+    }
 
-        stages {
-            stage('Manual Approval (Prod Only)') {
-                when {
-                    expression {
-                        params.serviceBranch.startsWith("refs/tags") &&
-                        params.manualApproval == 'true'
-                    }
-                }
-                steps { input message: "Approve production deployment?" }
-            }
-
-            stage('Deploy') {
-                when { expression { selectDeployEnv(params.serviceBranch).size() > 0 } }
-                steps {
-                    script {
-                        selectDeployEnv(params.serviceBranch).each { envName ->
-                            echo "Deploying ${params.serviceName} to ${envName}"
-                        }
-                    }
-                }
-            }
-
-            stage('Schedule Prod Deploy') {
-                when { expression { params.serviceBranch.startsWith("refs/tags") } }
-                steps { echo "Scheduling production deployment..." }
-            }
-        }
-
-        post {
-            success { echo "CD SUCCESS for ${params.serviceName}" }
-            failure { echo "CD FAILED for ${params.serviceName}" }
+    // Deploy stage
+    def targets = selectDeployEnv(params.serviceBranch)
+    if (targets.size() > 0) {
+        targets.each { envName ->
+            echo "Deploying ${params.serviceName} to ${envName}"
         }
     }
+
+    // Schedule Prod Deploy
+    if (params.serviceBranch.startsWith("refs/tags")) {
+        echo "Scheduling production deployment..."
+    }
+
+    // Post actions
+    echo "CD SUCCESS for ${params.serviceName}"
 }
