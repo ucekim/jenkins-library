@@ -1,6 +1,9 @@
 def call(Map config = [:]) {
+
     pipeline {
         agent any
+
+        stages {
 
             stage('Build') {
                 steps {
@@ -13,6 +16,7 @@ def call(Map config = [:]) {
                     sh "echo Testing ${config.appName}"
                 }
             }
+
         }
     }
 }
