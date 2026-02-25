@@ -13,10 +13,8 @@ def runCD(Map params) {
 
     // Deploy stage
     def targets = selectDeployEnv(params.serviceBranch)
-    if (targets.size() > 0) {
-        targets.each { envName ->
-            echo "Deploying ${params.serviceName} to ${envName}"
-        }
+    targets.each { envName ->
+        echo "Deploying ${params.serviceName} to ${envName}"
     }
 
     // Schedule Prod Deploy
