@@ -7,6 +7,7 @@ def call(Map config = [:]) {
         echo Running unit tests for ${appName}...
         # mvn test
         echo  ...... . ....
+        echo "......"
     """
 }
 
