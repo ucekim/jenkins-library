@@ -4,7 +4,7 @@ def call(Map config = [:]) {
 
     echo "Deploying ${appName} to ${env} environment"
 
-    // Örnek deploy komutu
+    // Örnek deploy komutu ... 
     sh """
         echo Deploying ${appName} to ${env}...
         # kubectl apply -f k8s/${env}/${appName}.yaml
