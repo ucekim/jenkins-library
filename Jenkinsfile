@@ -6,7 +6,6 @@ pipeline {
     }*/
 
     
-    
     stages {
         stage('Hello') {
             steps {
